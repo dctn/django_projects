@@ -1,0 +1,7 @@
+.task-item{
+    display: flex;
+    gap: 20px;
+}
+.task{
+    width: 90px;
+}

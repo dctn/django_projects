@@ -1,0 +1,46 @@
+{% load static %}
+<link rel="stylesheet" href="{% static 'style.css' %}">
+<script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+
+<meta name="csrf-token" content="{{ csrf_token }}">
+
+<div id="todo_list">
+    <h1>hello</h1>
+    <!-- Task addition form -->
+    <form action="" hx-post='{% url "add_task" %}'
+          hx-trigger="submit"
+          hx-target="#todo_list"
+          hx-swap="outerHTML">
+        {% csrf_token %}
+        <input type="text" id='task_input' value='hi' autocomplete="off" name="task" placeholder="New task" required>
+        <button type="submit">Add</button>
+    </form>
+
+    <!-- Task list -->
+    <div id="task_list_item">
+        {% for i in data %}
+            <div class="task-item" id='task_item'>
+                {% if i.checkbox == False%}
+                <!-- Checkbox for marking task completion -->
+                 <div class="task">
+                <input type="checkbox" name="task_{{ i.id }}" id="task-{{ i.id }}" hx-post="{% url 'checkbox' i.id %}" hx-trigger="click" hx-target="#todo_list" hx-swap="outerHTML">
+                <label for="task-{{ i.id }}">{{ i.name }}</label>
+                </div>
+
+                {% else %}
+                <div class="task">
+                    <input type="checkbox" name="task_{{ i.id }}" id="task-{{ i.id }}" checked hx-post="{% url 'checkbox' i.id %}" hx-trigger="click" hx-target="#todo_list" hx-swap="outerHTML">
+                    <label for="task-{{ i.id }}"><del>{{ i.name }}</del></label>
+                    </div>
+                {% endif %}
+
+
+                <div hx-post="{% url 'delete_task' i.id %}" hx-trigger="click" hx-target="#todo_list" hx-swap="outerHTML">
+                    <a>delete</a>
+                </div>
+                
+            </div>
+            
+        {% endfor %}
+    </div>
+</div>
